@@ -1,7 +1,6 @@
-# FAST Subjects for EPrints
+# FAST and LCSH Subjects for EPrints
 
-
-FAST subject fields and autocomplete
+FAST and LCSH subject fields and autocompletion scripts
 
 Plcae this in the EPrints workflow
 
