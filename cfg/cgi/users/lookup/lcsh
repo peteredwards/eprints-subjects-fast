@@ -1,6 +1,7 @@
 use strict;
 use HTTP::Request;
 use LWP::UserAgent;
+use Data::Dumper;
 use JSON;
 use EPrints;
 
@@ -18,9 +19,10 @@ sub get_subjects {
 		my $request = HTTP::Request->new( GET => "$query" );
 
 		my $ua = LWP::UserAgent->new( ssl_opts => {
-            verify_hostname => 0
-        } );
+			verify_hostname => 0
+		} );
 		my $response = $ua->request( $request );
+		print Dumper( $response );
 		if ( $response->is_success )
 		{
 			my $content = $response->content();

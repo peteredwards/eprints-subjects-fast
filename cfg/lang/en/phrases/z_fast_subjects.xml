@@ -1,5 +1,6 @@
 <epp:phrases xmlns="http://www.w3.org/1999/xhtml" xmlns:epp="http://eprints.org/ep3/phrase" xmlns:epc="http://eprints.org/ep3/control">
-  <epp:phrase id="eprint_fieldname_lcsh_subjects">Faceted Application of Subject Terminology (FAST)</epp:phrase>
-  <epp:phrase id="eprint_fieldname_lcsh_subjects_term">Subject term</epp:phrase>
-  <epp:phrase id="eprint_fieldname_lcsh_subjects_term_id">Subject term ID</epp:phrase>
+  <epp:phrase id="eprint_fieldname_fast_subjects">FAST subjects</epp:phrase>
+  <epp:phrase id="eprint_fieldhelp_fast_subjects">FAST (Faceted Application of Subject Terminology) is derived from the Library of Congress Subject Headings (LCSH). It seeks to adapt the LCSH with a simplified syntax while retaining its rich vocabulary. The schema maintains upward compatibility with LCSH, and its development has been a collaboration between the OCLC Research and the Library of Congress.</epp:phrase>
+  <epp:phrase id="eprint_fieldname_fast_subjects_term">Subject term</epp:phrase>
+  <epp:phrase id="eprint_fieldname_fast_subjects_term_id">Subject term ID</epp:phrase>
 </epp:phrases>
