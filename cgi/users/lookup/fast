@@ -1,0 +1,79 @@
+use strict;
+use HTTP::Request;
+use LWP::UserAgent;
+use Data::Dumper;
+use JSON;
+use EPrints;
+
+sub get_subjects {
+	my $subject = shift;
+	my $session = shift;
+	my $list = $session->make_element( 'ul' );
+
+	if ($subject) {
+		return $list if ( length( $subject ) < 3 );
+
+		$subject =~ s/\s+/\+/;
+		my $query = "https://fast.oclc.org/searchfast/fastsuggest?queryIndex=suggest50&queryReturn=suggestall%2Cidroot%2Cauth%2Ctag%2Ctype&suggest=autoSubject&rows=20&query=$subject";
+
+		my $request = HTTP::Request->new( GET => "$query" );
+
+		my $ua = LWP::UserAgent->new( ssl_opts => {
+			verify_hostname => 0
+		} );
+		my $response = $ua->request( $request );
+		print Dumper( $response );
+		if ( $response->is_success )
+		{
+			my $content = $response->content();
+			my $subject_data = decode_json( $content );
+			if ( $subject_data->{response}->{numFound} > 0 )
+			{
+				for my $sub ( @{ $subject_data->{response}->{docs} } )
+				{
+					$list->appendChild( my $li = $session->make_element( 'li' ) );
+					if ( $sub->{type} eq 'alt' )
+					{
+						$li->appendChild( $session->make_text( sprintf( "For %s use ", $sub->{suggestall}->[0] ) ) );
+					}
+					$li->appendChild( $session->make_element( 'strong' ) )->appendChild( $session->make_text( $sub->{auth} ) );
+					$li->appendChild( my $data = $session->make_element( 'ul' ) );
+					$data->appendChild( $session->make_element( 'li',
+						id => 'for:value:component:_term'
+					) )->appendChild( $session->make_text( $sub->{auth} ) );
+					$data->appendChild( $session->make_element( 'li',
+						id => 'for:value:component:_term_id'
+					) )->appendChild( $session->make_text( $sub->{idroot} ) );
+				}
+			}
+
+		}
+	}
+
+	return $list;
+
+} ## end get_subjects
+
+my $session = EPrints::Session->new();
+
+$session->send_http_header( content_type => "text/xml; charset=UTF-8" );
+
+print <<END;
+<?xml version="1.0" encoding="UTF-8" ?>
+
+END
+my $subjects = get_subjects( lc $session->param( "q" ), $session );
+print EPrints::XML::to_string( $subjects, "utf-8", 1 );
+EPrints::XML::dispose( $subjects );
+$session->terminate;
+
+#######################################################
+#
+# DataCite XML Schema includes the following attributes
+#
+# subjectScheme
+# schemeURI
+# valueURI
+# classificationCode
+#
+#######################################################
